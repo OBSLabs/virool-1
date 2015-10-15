@@ -1,0 +1,48 @@
+//$ ==> voters section styles 
+
+.voters-section {
+	position: relative;
+	padding-bottom: 5%;
+	p {
+		color: #565961;
+		margin-top: 20px;
+	}
+	.voters-content {
+		position: relative;
+	}
+	.popup {
+		margin-top: 5%;
+		.popup-box {
+			background: #71c5e2;
+			max-width: 350px;
+			padding: 30px 40px;
+			border-radius: 5px;
+			position: absolute;
+			top: -65%;
+			p {
+				color: #fff;
+				font-size: 16px;
+				margin-bottom: 0;
+				margin-top: 10px;
+			}
+			&:after,&:before {
+				position: absolute;
+		    top: 100%;
+		    left: 10%;
+		    content: '';
+		    width: 0;
+		    height: 0;
+		    border-top: solid 20px #71c5e2;
+		    border-left: solid 2px #71c5e2;
+		    border-right: solid 20px transparent;
+			}
+			h6 {
+				color: #fff;
+				font-size: 20px;
+			}
+		}
+		& > h5 {
+			margin-left: 40px;
+		}
+	}
+}

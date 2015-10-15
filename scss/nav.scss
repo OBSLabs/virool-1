@@ -1,0 +1,265 @@
+//$ ==> main nav styles 
+
+//$ ==> nav variables
+$color-1: #021725; // blue
+$color-2: #e36767; // red
+$color-3: #fff; // white
+
+
+$header-height-S: 50px;
+$header-height-M: 80px;
+
+$content-zindex: 1;
+$nav-zindex: 2;
+
+
+$color : #ecf0f1;
+$transition: 0.2s;// increase this to see the transformations happen in slow motion
+$base : 2rem;
+$button-size : 2rem; 
+$S:     320px;   
+$M:     768px;     
+$L:     1170px;     
+
+// media queries
+
+
+//$ ==> nav mixins
+@function calculateRem($size) {
+  $remSize: $size / 16px;
+  @return $remSize * 1rem;
+}
+@mixin MQ($canvas) {
+  @if $canvas == S {
+   @media only screen and (min-width: $S) { @content; } 
+  }
+  @else if $canvas == M {
+   @media only screen and (min-width: $M) { @content; } 
+  }
+  @else if $canvas == L {
+   @media only screen and (min-width: $L) { @content; } 
+  }
+}
+@mixin transform($transforms) {
+	   -moz-transform: $transforms;
+	     -o-transform: $transforms;
+	    -ms-transform: $transforms;
+	-webkit-transform: $transforms;
+          transform: $transforms;
+}
+@mixin font-size($size) {
+  font-size: $size;
+  font-size: calculateRem($size);
+}
+
+// center vertically and/or horizontally an absolute positioned element
+
+@mixin center($xy:xy) {
+  @if $xy == xy {
+    left: 50%;
+    top: 50%;
+    bottom: auto;
+    right: auto;
+    @include transform(translateX(-50%) translateY(-50%));
+  }
+  @else if $xy == x {
+    left: 50%;
+    right: auto;
+    @include transform(translateX(-50%));
+  }
+  @else if $xy == y {
+    top: 50%;
+    bottom: auto;
+    @include transform(translateY(-50%));
+  }
+}
+
+// border radius
+
+@mixin border-radius($radius:.25em) {
+  border-radius: $radius;
+}
+
+// antialiasing mode font rendering
+
+@mixin font-smoothing {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+	nav.main-nav {
+		@include clearfix();
+		position: absolute;
+		width: 100%;
+		top: 0;
+		z-index: 20;
+		& > a {
+			float: left;
+			padding: 10px;
+			margin-left: 10px;
+			img {
+				max-width: 130px;
+				padding: 10px;
+			}
+		}
+		& > button {
+			right: 0;
+			display:inline-block;
+		  border:none;
+		  position: fixed;
+		  background:none;
+		  z-index: 999;
+		  padding: 25px 25px;
+		  span{
+		    display:block;
+		  }
+		}
+
+
+		.lines-button {
+		  transition: .3s;
+		  cursor: pointer;
+		  user-select: none;
+		  background: #f83a3a;
+		  &:hover {
+		    opacity: 1;
+		  	background: #f94d4d;
+		  }
+		  &:focus {
+		  	outline: none;
+		  }
+		  &:active {
+		    transition: 0;
+		  }
+		}
+
+		@mixin line {
+		  display: inline-block;
+		  width: 2.1rem;
+		  height: 0.26rem;
+		  background: $color;
+		  transition: $transition;
+		}
+
+		.lines {
+		  @include line;
+		  position: relative; 
+			bottom: 4px;
+			border-radius: 2px;
+		  &:before, &:after {
+		   @include line;
+		    position: absolute;
+		    left:0;
+		    border-radius: 2px;
+		    content: '';
+		    -webkit-transform-origin: $button-size/14 center;
+		            transform-origin: $button-size/14 center;
+		  }
+		  &:before { 
+		    top: $button-size/2.5; 
+		  }
+		  &:after { 
+		    top: -$button-size/2.5; 
+		  }
+		}
+		.lines-button:hover {
+		  .lines {
+		    &:before { 
+		      top: $button-size/2; 
+		    }
+		    &:after { 
+		      top: -$button-size/2; 
+		    }
+		  }
+		}
+		.lines-button.close {
+		  -webkit-transform: scale3d(.8,.8,.8);
+		          transform: scale3d(.8,.8,.8);
+		          background: none;
+		          &:hover,&:focus {
+		          	background: none;
+		          	outline: none;
+		          }
+		}
+
+		.lines-button.x.close {
+			margin-right: 5px;
+		  .lines {
+		    background: transparent;
+		    &:before, &:after{
+		      -webkit-transform-origin: 50% 50%;
+		              transform-origin: 50% 50%;
+		      top:0;
+		      width: 3rem;
+		      height: 0.4rem;
+		    }
+		    &:before{
+		      -webkit-transform: rotate3d(0,0,1,45deg); 
+		              transform: rotate3d(0,0,1,45deg); 
+		    }
+		    &:after{
+		      -webkit-transform: rotate3d(0,0,1,-45deg); 
+		              transform: rotate3d(0,0,1,-45deg); 
+		    }
+		  }
+		}
+		//$ ==> button animation
+}
+
+
+.cd-primary-nav {
+	position: fixed;
+	left: 0;
+	top: 0;
+	height: 100%;
+	width: 100%;
+	z-index: 999;
+	background: rgba($color-1, .96);
+	z-index: $nav-zindex;
+	text-align: center;
+	padding: $header-height-S 0;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	overflow: auto;
+	-webkit-overflow-scrolling: touch;
+	@include transform(translateY(-100%));
+	opacity: 0;
+	ul {
+		width: 100%;
+		padding-left: 0;
+	}
+	li {
+		list-style: none;
+	}
+	li:first-child {
+		margin-top: 25px;
+	}
+	a {
+		opacity : 0;
+		display: block;
+		color: #fff;
+		padding: 0.5em;
+		width: 100%;
+		font-size: 20px;
+		text-transform: uppercase;
+		font-family: gotham_ssm-bold;
+		transition: .6s;
+		&:hover,&:focus {
+			background: #69b7d5;
+			text-decoration: none;
+			color: #091740;
+			outline: none;
+		}
+		.no-touch &:hover {
+			background-color: $color-2;
+		}
+	}
+
+
+	&.is-visible {
+		@include transform(translateY(0));
+		z-index : 11;
+	}
+
+}
+

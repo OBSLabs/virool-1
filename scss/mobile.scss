@@ -1,0 +1,82 @@
+//$ ==> media queries 
+
+@mixin bp-large {
+  @media only screen and (max-width: 60em) {
+    @content;
+  }
+}
+
+@mixin bp-medium {
+  @media only screen and (max-width: 40em) {
+    @content;
+  }
+}
+
+@mixin bp-small {
+  @media only screen and (max-width: 30em) {
+    @content;
+  }
+}
+
+
+@include bp-medium {
+	h1 { font-size: get-vw(90px);}
+	h2 { font-size: get-vw(80px); }
+	h3 { font-size: get-vw(50px); }
+	h4 { font-size: get-vw(70px); }	
+  h5 { font-size: get-vw(40px); } 
+	p  { font-size: get-vw(50px); }
+	.cd-primary-nav  a { font-size: get-vw(40px); }
+  section.full-width.auto-width-mobile {
+    height: auto;
+  }
+  .centerer {
+    position: static;
+    transform: none;
+  }
+  nav.main-nav {
+    & > a {
+      width: 50%;
+      padding: 10px 10px;
+      padding-top: 15px;
+    }
+    .lines-button {
+      &:hover {
+        background: none;
+      }
+    }
+  }
+
+  // ==> graphs section 
+  .graph-section {
+    .graph-tabs {
+      ul {
+        display: block;
+        li:first-child,li:last-child {
+          & > a {
+            border-radius: 0;
+          }
+        }
+        li {
+          display: block;
+          a {
+            display: block;
+          }
+        }
+      }
+    }
+  }
+
+  //$ ==> reach section 
+
+  .reach-section {
+    .video-list {
+      ul {
+        display: block;
+        li {
+          display: block;
+        }        
+      }
+    }
+  }
+}

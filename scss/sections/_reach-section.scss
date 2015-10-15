@@ -1,0 +1,38 @@
+//$ ==> reach section styles 
+
+.reach-section {
+	padding: 5% 0;
+	p,li {
+		color: #565961
+	}
+	.video {
+			width: 80%;
+			margin: 0 auto;
+			padding-top: 3%;
+		video {
+			width: 100%;
+			margin: 0 auto;
+			outline: none;
+			cursor: pointer;
+		}
+	}
+	.video-list {
+		margin-top: 5%;
+		ul {
+			display: table;
+			li {
+				display: table-cell;
+				background: url('../assets/img/icons/bullet.png');
+				background-repeat: no-repeat;
+				background-position: 5px 0;
+				font-family: 'Open Sans', sans-serif;
+				font-weight: 300;
+				text-align: left;
+				padding-top: 30px;
+				font-size: 20px;
+				max-width: 185px;
+			}
+		}
+	}
+
+}

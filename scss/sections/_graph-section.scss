@@ -1,0 +1,142 @@
+//$ ==> scrolling wrap box
+
+
+//$ ==> graph section styles 
+.graph-section {
+	@include clearfix();
+	padding-top: 5%;
+	background: #fff;
+	h2 {
+		color: #353535;
+		margin-bottom: 0;
+		margin-top: 0;
+	}
+
+	.graph-tabs {
+		padding: 3% 0;
+		font-family: 'Open Sans', sans-serif;
+		ul {
+			display: table;
+			margin: 0 auto;
+			li:first-child {
+				& > a {
+					border-top-left-radius: 20px;
+					border-bottom-left-radius: 20px;
+				}
+			}
+			li:last-child {
+				& > a {
+					border-right: 0;
+					border-top-right-radius: 20px;
+					border-bottom-right-radius: 20px;
+				}
+			}
+			li.active {
+				& > a {
+					background: #f0f0f2;
+					color: #9ba2a3;
+					&:hover {
+						background: #f0f0f2;
+					}
+				}
+			}
+			li {
+				padding: 0;
+				display: table-cell;
+				a {
+					background: #f83a3a;
+					display: table-cell;
+					color: #fff;
+					padding: 12px 30px;
+					border-right: 1px solid #d03131;
+					&:hover {
+						background: #f94d4d;
+					}
+					&:hover,&:focus {
+						outline: none;
+						text-decoration: none;
+					}
+				}
+			}
+		}
+	}
+	
+	//$ ==> chart section  
+
+	.chart {
+		height: 70%;
+		margin: 0 auto;
+		position: relative;
+		padding: 0 5%;
+		overflow: hidden;
+		.chart-hidden-wrap {
+			margin: 0 auto;
+			height: 100%;
+			width: 150%;
+			position: relative;
+			.chart-bars {
+				height: 100%;
+				width: 100%;
+				display: table;
+				@include transition(all 0.5s);
+			}
+		}
+
+		.chart-piece-wrapper {
+			height: 100%;
+			display: table-cell;
+			padding: 0 5px;
+			.chart-text {
+				& > img {
+					width: 60px;
+					margin: 0 auto;
+					border-radius: 100%;
+				} 
+				opacity: 0;
+				margin-top: -90px;
+			}
+		}
+		.chart-piece {
+			height: 100%;
+			position: relative;
+			.chart-bar {
+				width: 100%;
+				position: absolute;
+				cursor: pointer;
+				bottom: 0;
+				overflow: visible !important;
+				text-align: center;
+				span {
+					position: absolute;
+					top: 15px;
+					color: #fff;
+					margin: auto;
+					left: 0;
+					right: 0;
+					font-family: gotham_ssm-bold;
+					font-size: 22px;
+					opacity: 0;
+				}
+			}
+			
+		}
+		.chart-piece.rep {
+			.chart-bar {
+				background: #f83a3a;
+				&:hover {
+					background: #f94d4d;
+				}
+			}
+		
+		}
+		.chart-piece.dem {
+			.chart-bar {
+				background: #2a5193;
+				&:hover {
+					background: #3f629e;
+				}
+			}
+		}
+	}
+
+}	

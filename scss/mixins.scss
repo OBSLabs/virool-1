@@ -1,0 +1,66 @@
+//$ ==> custom fonts 
+@font-face {
+  font-family: "gotham_ssm-light";
+  src: url("https://d144jcel4sywwj.cloudfront.net/fonts/gotham/light.eot");
+  src: url("https://d144jcel4sywwj.cloudfront.net/fonts/gotham/light.eot?#iefix") format("embedded-opentype"), url("https://d144jcel4sywwj.cloudfront.net/fonts/gotham/light.woff") format("woff"), url("https://d144jcel4sywwj.cloudfront.net/fonts/gotham/light.ttf") format("truetype"), url("https://d144jcel4sywwj.cloudfront.net/fonts/gotham/light.svg#wf") format("svg");
+}
+
+@font-face {
+  font-family: "gotham_ssm-medium";
+  src: url("https://d144jcel4sywwj.cloudfront.net/fonts/gotham/medium.eot");
+  src: url("https://d144jcel4sywwj.cloudfront.net/fonts/gotham/medium.eot?#iefix") format("embedded-opentype"), url("https://d144jcel4sywwj.cloudfront.net/fonts/gotham/medium.woff") format("woff"), url("https://d144jcel4sywwj.cloudfront.net/fonts/gotham/medium.ttf") format("truetype"), url("https://d144jcel4sywwj.cloudfront.net/fonts/gotham/medium.svg#wf") format("svg");
+}
+
+@font-face {
+  font-family: "gotham_ssm-bold";
+  src: url("https://d144jcel4sywwj.cloudfront.net/fonts/gotham/bold.eot");
+  src: url("https://d144jcel4sywwj.cloudfront.net/fonts/gotham/bold.eot?#iefix") format("embedded-opentype"), url("https://d144jcel4sywwj.cloudfront.net/fonts/gotham/bold.woff") format("woff"), url("https://d144jcel4sywwj.cloudfront.net/fonts/gotham/bold.ttf") format("truetype"), url("https://d144jcel4sywwj.cloudfront.net/fonts/gotham/bold.svg#wf") format("svg");
+}
+
+//$ ==> custom mixins scss 
+
+@mixin transition($transition...) {
+    -moz-transition:    $transition;
+    -o-transition:      $transition;
+    -webkit-transition: $transition;
+    transition:         $transition;
+}
+@mixin opacity($opacity) {
+  opacity: $opacity;
+  $opacity-ie: $opacity * 100;
+  filter: alpha(opacity=$opacity-ie); //IE8
+}
+
+@function get-vw($target) { 
+  $vw-context: (1000*.01) * 1px;
+  @return ($target/$vw-context) * 1vw;
+}
+@mixin centre($axis: "both"){
+    position: absolute;
+    z-index: 1;
+    @if $axis == "y"{
+        top:50%;
+        -webkit-transform: translateY(-50%);
+        -moz-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+        -o-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+    @if $axis == "x"{
+        left:50%;
+        -webkit-transform: translateX(-50%);
+        -moz-transform: translateX(-50%);
+        -ms-transform: translateX(-50%);
+        -o-transform: translateX(-50%);
+        transform: translateX(-50%);
+    }
+    @if $axis == "both"{
+        top:50%;
+        left:50%;
+        -webkit-transform: translate(-50%, -50%);
+        -moz-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        -o-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }   
+}

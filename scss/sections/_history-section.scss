@@ -1,0 +1,106 @@
+//$ ==> history section styles 
+
+.history-section {
+	background: #f0f0f2;
+	padding: 5% 0;
+	h2 {
+		margin-top: 0;
+		margin-bottom: 2%;
+	}
+	.timeline-wrapper {
+		overflow: hidden;
+		padding-left: 2%;
+		position: relative;
+		padding-bottom: 20px;
+	}
+	.table-moving {
+		width: 200%;
+	}
+	.timeline-table {
+		thead {
+			.timeline-stat-thead {
+				max-width: 300px;
+			}
+			tr {
+				td {			
+					vertical-align: top;
+				}
+			}
+		}
+		tbody {
+				background: url('../assets/img/timeline/history-line.jpg')repeat-x;
+				background-position: 10px 85%;
+				padding-top: 2%;
+			tr {
+				td:last-child {
+					background: #F0F0F2 url("../assets/img/timeline/dot1.png") no-repeat scroll 0px 92%;
+				}
+				td {
+					padding-bottom: 35px;
+					padding-top: 20px;
+					background: url('../assets/img/timeline/dot1.png')no-repeat;
+					background-position: 0px 92%;
+					font-size: 20px;
+					color: #353535;
+				}
+			}
+		}
+		tfoot {
+				border-collapse: separate;
+			td {
+				padding-top: 20px;
+				vertical-align: top;
+				padding-right: 40px;
+			}
+
+			.timeline-stat-helper {
+				height: 100%;
+				padding-right: 40px;
+				display: table-cell;
+			}
+			.timeline-stat {
+				max-width: 300px;
+				background: #fff;
+				margin-right: 20px;
+				border-spacing: 40px;
+				border-radius: 5px;
+				display: table-cell;
+				vertical-align: top;
+				box-shadow: 0 0 10px rgba(217,217,217,0.9); 
+				-ms-box-shadow: 0 0 10px rgba(217,217,217,0.9); 
+				-moz-box-shadow: 0 0 10px rgba(217,217,217,0.9); 
+				-webkit-box-shadow: 0 0 10px rgba(217,217,217,0.9); 
+				transition: .7s;
+				&:hover {
+					&:hover {
+						box-shadow: 0 0 20px rgba(0,0,0,0.4); 
+						-ms-box-shadow: 0 0 20px rgba(0,0,0,0.4);  
+						-moz-box-shadow: 0 0 20px rgba(0,0,0,0.4);  
+						-webkit-box-shadow: 0 0 20px rgba(0,0,0,0.4);  
+					}
+				}
+				img {
+					border-top-left-radius: 5px;
+					border-top-right-radius: 5px;
+				}
+				.stat-text {
+					padding: 5%;
+					p {
+						font-size: 16px;
+						color: #565961;
+						span {
+							color: #c8cace;
+							text-transform: uppercase;
+							font-size: 12px;
+						}
+					}
+					p:last-child {
+						margin-bottom: 0;
+					}
+				}
+			
+			}
+		}
+
+	}
+}

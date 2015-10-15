@@ -1,0 +1,118 @@
+//$ ==> electorat section styles 
+
+.electorat-section {
+	padding: 5% 0;
+	.electorat-content {
+		margin-top: 10%;
+	}
+	p {
+		color: #565961;
+	}
+		.numbs-wrapper {
+			position: absolute;
+			margin-left: auto;
+			margin-right: auto;
+			left: 0;
+			right: 5%;
+			.percentage {
+				background: #87d23e;
+				color: #fff;
+				border-radius: 15px;
+				padding: 5px 15px;
+				display: inline-block;
+				font-weight: 800;
+				font-size: 16px;
+				margin-left: 30%;
+				opacity: 0;
+			}
+			.numb {
+				font-size: 56px;
+				color: #565961;
+				margin-top: -10px;
+				margin-left: 10px;
+				font-family: gotham_ssm-bold;
+				opacity: 0;
+				& > i {
+					color: #c6c6ce;
+					margin-right: 10px;
+				}
+			}
+		}
+	.mobile-group,.flag-group {
+		position: relative;
+	}
+	.mobile-group {
+		overflow: hidden;
+		height: 270px;
+		margin-top: -5%;
+		.numbs-wrapper {
+			left: 15%;
+		}
+		.hands-wrapper {
+			height: 100%;
+			.hand-img {
+				display: inline-block;
+				position: relative;
+				height: 100%;
+				width: 15%;
+				img {
+					position: absolute;
+					bottom: -110%;
+				}
+			}
+
+		}
+	}
+	.flag-group {
+		overflow: hidden;
+		height: 310px;
+		.hands-wrapper {
+			height: 100%;
+			.hand-img {
+				display: inline-block;
+				position: relative;
+				height: 100%;
+				width: 25%;
+				img {
+					position: absolute;
+					bottom: -110%;
+				}
+			}
+
+		}
+		.numbs-wrapper {
+			top: 0%;
+			left: 10%;
+		}
+	}
+	.hand-group {
+		position: relative;
+		overflow: hidden;
+
+		.hands-wrapper {
+			text-align: center;
+			height: 300px;
+			width: 100%;
+			position: relative;
+			.list-inline {
+
+			}
+			.hand {
+				display: inline-block;
+				position: relative;
+				height: 100%;
+				margin: 0 5px;
+				.hand-bar {
+					background: #162041;
+					position: absolute;
+					bottom: -40%;
+					width: 100%;
+					overflow: visible !important;
+					& > img {
+						margin-top: -140%;
+					}
+				}
+			}
+		}
+	}
+}
