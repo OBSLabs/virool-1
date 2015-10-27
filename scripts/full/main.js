@@ -936,6 +936,26 @@ var simpleHandsHeights=	[{height : 95},
 
 
 (function() {
+	var candidateFaces = [
+		{file: "Ben_Carson_rep.png", party: "rep"},
+		{file: "Carly_Fiorina_rep.png", party: "rep"},
+		{file: "Donald_Trump_rep.png", party: "rep"},
+		{file: "Jeb_Bush_rep.png", party: "rep"},
+		{file: "Marco_Rubio_rep.png", party: "rep"},
+		{file: "Mike_Huckabee_rep.png", party: "rep"},
+		{file: "Mitt_Romney_rep.png", party: "rep"},
+		{file: "Paul_Rand_rep.png", party: "rep"},
+		{file: "Richard_Santorum_rep.png", party: "rep"},
+		{file: "Scott_Walker_rep.png", party: "rep"},
+		{file: "Ted_Cruz_rep.png", party: "rep"},
+		{file: "rick-perry-rep.png", party: "rep"},
+		{file: "Bernie_Sanders_dem.png", party: "dem"},
+		{file: "Hillary_Clinton_dem.png", party: "dem"},
+		{file: "Jim_Webb_dem.png", party: "dem"},
+		{file: "Martin_OMalley_dem.png", party: "dem"},
+		{file: "Obama_dem.png", party: "dem"}
+	];
+
 	function random (min, max) {
 		return min + ~~(Math.random() * 99999) % (max - min + 1)
 	}
@@ -959,7 +979,7 @@ var simpleHandsHeights=	[{height : 95},
 
 	var $candidates = $(".js-candidates");
 
-	function randomPoints(n) {
+	function randomPoints(n, real) {
 		return Array.apply(null, Array(n))
 			.map(Number.prototype.valueOf,0)
 			.map(function() {
@@ -967,8 +987,19 @@ var simpleHandsHeights=	[{height : 95},
 			})
 			.map(function(pos) {
 				var candidate = document.createElement("span")
-				candidate.className = "candidate candidate_anonymous";
-				candidate.className += randomBool() ? " candidate_rep" : " candidate_dem";
+
+				if(real) {
+					var info = candidateFaces[random(0, candidateFaces.length - 1)];
+					candidate.className = "candidate candidate_real";
+					candidate.className += info.party === "rep" ? " candidate_rep" : " candidate_dem";
+
+					candidate.innerHTML = '<img src="assets/img/faces/' + info.file + '" />'
+				} else {
+					candidate.className = "candidate candidate_anonymous";
+					candidate.className += randomBool() ? " candidate_rep" : " candidate_dem";
+				}
+
+
 				candidate.style.left = pos[0] + "%"
 				candidate.style.top = pos[1] + "%"
 				return candidate;
@@ -982,15 +1013,25 @@ var simpleHandsHeights=	[{height : 95},
 		var $points;
 
 		$initial
-			.append($points = randomPoints(500))
+			.append($points = randomPoints(250))
+			.append($candidates = randomPoints(50, true))
 			.appendTo($root);
 
 		$points = $points.map($)
+		$candidates = $candidates.map($)
 
 		$points.map(function ($point) {
 			setInterval(function () {
 				$point.toggleClass("candidate_shown", random(0, 20) === 0)
 			}, random(400, 1200))
+		})
+
+		$candidates.map(function ($point) {
+			setInterval(function () {
+				var show = random(0, 15) === 0;
+				$point.toggleClass("candidate_shown", show)
+				$point.toggleClass("candidate_hidden", !show)
+			}, random(600, 1800))
 		})
 	})($candidates);
 
