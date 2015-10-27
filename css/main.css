@@ -1019,6 +1019,7 @@ section.full-width {
   display: inline-block;
   border-radius: 12px;
   opacity: 0;
+  z-index: 1;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   -webkit-transition: all 150ms linear;
@@ -1039,4 +1040,34 @@ section.full-width {
 
 .candidate_rep {
   background: #f83a3a;
+}
+
+
+.state {
+  -webkit-animation: stateAnimation 4.5s infinite;
+  animation: stateAnimation 4.5s infinite;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.state_1 {-webkit-animation-delay: 2s;animation-delay: 2s;}
+.state_2 {-webkit-animation-delay: 5s;animation-delay: 5s;}
+.state_3 {-webkit-animation-delay: 9s;animation-delay: 9s;}
+.state_4 {-webkit-animation-delay: 3s;animation-delay: 3s;}
+.state_5 {-webkit-animation-delay: 5.3s;animation-delay: 5.3s;}
+.state_6 {-webkit-animation-delay: 4s;animation-delay: 4s;}
+.state_7 {-webkit-animation-delay: 2.5s;animation-delay: 2.5s;}
+.state_8 {-webkit-animation-delay: 6s;animation-delay: 6s;}
+.state_9 {-webkit-animation-delay: 4.5s;animation-delay: 4.5s;}
+
+
+@-webkit-keyframes stateAnimation {
+  0%   { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes stateAnimation {
+  0%   { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
 }
