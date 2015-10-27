@@ -1010,3 +1010,12 @@ section.full-width {
     display: block; }
     .reach-section .video-list ul li {
       display: block; } }
+
+
+.candidate {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: red;
+  display: inline-block;
+}
