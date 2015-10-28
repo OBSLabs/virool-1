@@ -249,12 +249,6 @@
     var loader = candidateFaces.map(function(f) {return "assets/img/faces/" + f.file}).map(loadImg);
     var stateLoader = statePics.map(loadImg)
 
-
-    loadImg("assets/img/swing-states/1.png").then(function(img) {
-      states.push(new State(175, 435, img));
-    });
-
-
     $.when.apply($, stateLoader).then(function() {
       states = [
         new State(175, 435, arguments[0]),
