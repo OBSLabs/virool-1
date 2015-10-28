@@ -970,69 +970,167 @@ var simpleHandsHeights=	[{height : 95},
 		var yBoundaries = border[idx];
 		var boundary = yBoundaries[random(0, yBoundaries.length - 1)];
 		var y = random(boundary[0], boundary[1]);
-		return [~~(x / origImageSize[0] * 100), y];
+		return [x, ~~(y * origImageSize[1] / 100)];
 	}
 
 	function randomBool () {
 		return random(0, 1) === 0;
 	}
 
-	var $candidates = $(".js-candidates");
+	function loadImg (src) {
+		var def = new $.Deferred()
 
-	function randomPoints(n, real) {
-		return Array.apply(null, Array(n))
-			.map(Number.prototype.valueOf,0)
-			.map(function() {
-				return randomCoords();
-			})
-			.map(function(pos) {
-				var candidate = document.createElement("span")
+		var img = document.createElement("img");
+		img.src = src;
+		img.style.position = "absolute";
+		img.style.left = "-9999px";
+		img.onload = function() {
+			def.resolve(img);
+		}
 
-				if(real) {
-					var info = candidateFaces[random(0, candidateFaces.length - 1)];
-					candidate.className = "candidate candidate_real";
-					candidate.className += info.party === "rep" ? " candidate_rep" : " candidate_dem";
-
-					candidate.innerHTML = '<img src="assets/img/faces/' + info.file + '" />'
-				} else {
-					candidate.className = "candidate candidate_anonymous";
-					candidate.className += randomBool() ? " candidate_rep" : " candidate_dem";
-				}
-
-
-				candidate.style.left = pos[0] + "%"
-				candidate.style.top = pos[1] + "%"
-				return candidate;
-			});
+		return def;
 	}
 
-	(function($root) {
-		var $initial = $(document.createDocumentFragment());
-		var $candidate;
+	var frame = window.requestAnimationFrame ||
+		          window.mozRequestAnimationFrame ||
+		          window.webkitRequestAnimationFrame ||
+		          window.msRequestAnimationFrame;
 
-		var $points;
+	var Point = function(x, y, color) {
+		this.x = x;
+		this.y = y;
+		this.color = color;
+		this.radius = 0;
+		this.done = false;
+	};
 
-		$initial
-			.append($points = randomPoints(250))
-			.append($candidates = randomPoints(50, true))
-			.appendTo($root);
+	Point.radius = 18;
+	Point.speed = 800;
 
-		$points = $points.map($)
-		$candidates = $candidates.map($)
+	Point.prototype.tick = function(ts) {
+		this.ts = this.ts || ts;
 
-		$points.map(function ($point) {
-			setInterval(function () {
-				$point.toggleClass("candidate_shown", random(0, 20) === 0)
-			}, random(400, 1200))
-		})
+		if(!this.done) {
+			var progress = (ts - this.ts) / Point.speed;
+			var size;
 
-		$candidates.map(function ($point) {
-			setInterval(function () {
-				var show = random(0, 15) === 0;
-				$point.toggleClass("candidate_shown", show)
-				$point.toggleClass("candidate_hidden", !show)
-			}, random(600, 1800))
-		})
-	})($candidates);
+			if(progress > .5) {
+				size = 1 - (progress - .5) / .5
+
+				if(size < 0.0) {
+					this.done = true;
+				}
+			} else {
+				size = progress / .5;
+			}
+
+			this.radius = size * Point.radius;
+		}
+	};
+
+	Point.prototype.render = function(ctx) {
+		if(this.done) return;
+
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+		ctx.closePath();
+		ctx.fillStyle = this.color;
+		ctx.fill();
+	};
+
+
+	(function() {
+		var ctx = document.getElementById('map').getContext('2d');
+
+		var points = [new Point(500, 500), new Point(505, 505)]
+
+		function render(ts) {
+			ctx.clearRect(0, 0, origImageSize[0], origImageSize[1]);
+
+			for(var i in points) {
+				var point = points[i];
+
+				point.render(ctx);
+				point.tick(ts);
+			}
+
+			frame(render);
+		}
+
+  	frame(render);
+
+  	setInterval(function() {
+  		var coords = randomCoords();
+
+  		// garbage collection
+			for(var i in points) {
+				if(points[i].done) {
+					points.splice(i, 1);
+				}
+  		}
+
+  		for(var i = 0; i < random(0, 20); i++) {
+  			points.push(new Point(coords[0], coords[1], randomBool() ? "#3d77d1" : "#f83a3a"))
+  		}
+  	}, 20)
+	})();
+
+	// var $candidates = $(".js-candidates");
+
+	// function randomPoints(n, real) {
+	// 	return Array.apply(null, Array(n))
+	// 		.map(Number.prototype.valueOf,0)
+	// 		.map(function() {
+	// 			return randomCoords();
+	// 		})
+	// 		.map(function(pos) {
+	// 			var candidate = document.createElement("span")
+
+	// 			if(real) {
+	// 				var info = candidateFaces[random(0, candidateFaces.length - 1)];
+	// 				candidate.className = "candidate candidate_real";
+	// 				candidate.className += info.party === "rep" ? " candidate_rep" : " candidate_dem";
+
+	// 				candidate.innerHTML = '<img src="assets/img/faces/' + info.file + '" />'
+	// 			} else {
+	// 				candidate.className = "candidate candidate_anonymous";
+	// 				candidate.className += randomBool() ? " candidate_rep" : " candidate_dem";
+	// 			}
+
+
+	// 			candidate.style.left = pos[0] + "%"
+	// 			candidate.style.top = pos[1] + "%"
+	// 			return candidate;
+	// 		});
+	// }
+
+	// (function($root) {
+	// 	var $initial = $(document.createDocumentFragment());
+	// 	var $candidate;
+
+	// 	var $points;
+
+	// 	$initial
+	// 		.append($points = randomPoints(250))
+	// 		.append($candidates = randomPoints(50, true))
+	// 		.appendTo($root);
+
+	// 	$points = $points.map($)
+	// 	$candidates = $candidates.map($)
+
+	// 	$points.map(function ($point) {
+	// 		setInterval(function () {
+	// 			$point.toggleClass("candidate_shown", random(0, 20) === 0)
+	// 		}, random(400, 1200))
+	// 	})
+
+	// 	$candidates.map(function ($point) {
+	// 		setInterval(function () {
+	// 			var show = random(0, 15) === 0;
+	// 			$point.toggleClass("candidate_shown", show)
+	// 			$point.toggleClass("candidate_hidden", !show)
+	// 		}, random(600, 1800))
+	// 	})
+	// })($candidates);
 
 })();
