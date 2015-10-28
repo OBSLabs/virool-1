@@ -981,12 +981,15 @@ var simpleHandsHeights=	[{height : 95},
 		var def = new $.Deferred()
 
 		var img = document.createElement("img");
+
+		img.onerror = img.onload = function() {
+			def.resolve(img);
+		}
+
 		img.src = src;
 		img.style.position = "absolute";
 		img.style.left = "-9999px";
-		img.onload = function() {
-			def.resolve(img);
-		}
+		document.body.appendChild(img)
 
 		return def;
 	}
@@ -996,53 +999,121 @@ var simpleHandsHeights=	[{height : 95},
 		          window.webkitRequestAnimationFrame ||
 		          window.msRequestAnimationFrame;
 
-	var Point = function(x, y, color) {
-		this.x = x;
-		this.y = y;
-		this.color = color;
-		this.radius = 0;
-		this.done = false;
-	};
+	function hexToRgb(hex) {
+		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+		return result ? {
+			r: parseInt(result[1], 16),
+			g: parseInt(result[2], 16),
+			b: parseInt(result[3], 16)
+		} : null;
+	}
 
-	Point.radius = 18;
-	Point.speed = 800;
+	var Point = (function() {
+		var Point = function(x, y, color) {
+			this.x = x;
+			this.y = y;
+			this.color = color;
+			this.radius = 0;
+			this.progress = 0;
+			this.done = false;
+		};
 
-	Point.prototype.tick = function(ts) {
-		this.ts = this.ts || ts;
+		Point.prototype.maxRadius = 18;
+		Point.prototype.speed = 800;
 
-		if(!this.done) {
-			var progress = (ts - this.ts) / Point.speed;
+		Point.prototype.tick = function(ts) {
+			this.ts = this.ts || ts;
+
+			if(!this.done) {
+				this.progress = (ts - this.ts) / this.speed;
+				this.recalculate();
+			}
+		};
+
+		Point.prototype.recalculate = function() {
 			var size;
 
-			if(progress > .5) {
-				size = 1 - (progress - .5) / .5
+			if(this.progress > .5) {
+				size = 1 - (this.progress - .5) / .5
 
 				if(size < 0.0) {
 					this.done = true;
 				}
 			} else {
-				size = progress / .5;
+				size = this.progress / .5;
+
 			}
 
-			this.radius = size * Point.radius;
+			this.opacity = size;
+			this.radius = size * this.maxRadius;
+		};
+
+		Point.prototype.render = function(ctx) {
+			if(this.done) return;
+
+			var color = hexToRgb(this.color);
+
+			ctx.beginPath();
+			ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+			ctx.closePath();
+			ctx.fillStyle = "rgba(" + [color.r, color.g, color.b, this.opacity].join(",") + ")";
+			ctx.fill();
+		};
+
+		return Point;
+	})();
+
+	var Candidate = (function () {
+		var Candidate = function(x, y, color, img) {
+			Point.call(this, x, y, color);
+			this.img = img;
 		}
-	};
 
-	Point.prototype.render = function(ctx) {
-		if(this.done) return;
+		Candidate.prototype = new Point();
 
-		ctx.beginPath();
-		ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-		ctx.closePath();
-		ctx.fillStyle = this.color;
-		ctx.fill();
-	};
+		Candidate.prototype.maxRadius = 86;
+		Candidate.prototype.speed = 2000;
+
+		Candidate.prototype.recalculate = function() {
+			this.radius = this.progress * this.maxRadius;
+			this.opacity = 1 - this.progress;
+
+			if(this.progress >= 1) {
+				this.done = true
+			}
+		};
+
+		Candidate.prototype.render = function(ctx) {
+			if(this.done) return;
+
+			ctx.save()
+			ctx.beginPath();
+			ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+			ctx.closePath();
+			ctx.clip();
+			ctx.globalAlpha = this.opacity;
+			ctx.drawImage(this.img, this.x - this.radius, this.y - this.radius, (this.radius * 2), (this.radius * 2))
+			ctx.globalAlpha = 1.0;
+    	ctx.restore();
+
+			ctx.beginPath();
+			ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+			ctx.closePath();
+
+			var color = hexToRgb(this.color);
+
+			ctx.fillStyle = "rgba(" + [color.r, color.g, color.b, this.opacity * .5].join(",") + ")";
+			ctx.fill();
+		}
+
+		return Candidate;
+	})();
 
 
 	(function() {
 		var ctx = document.getElementById('map').getContext('2d');
 
-		var points = [new Point(500, 500), new Point(505, 505)]
+		var points = [];
 
 		function render(ts) {
 			ctx.clearRect(0, 0, origImageSize[0], origImageSize[1]);
@@ -1059,78 +1130,31 @@ var simpleHandsHeights=	[{height : 95},
 
   	frame(render);
 
-  	setInterval(function() {
-  		var coords = randomCoords();
+  	var loader = candidateFaces.map(function(f) {return "assets/img/faces/" + f.file}).map(loadImg);
 
-  		// garbage collection
-			for(var i in points) {
-				if(points[i].done) {
-					points.splice(i, 1);
-				}
-  		}
+  	$.when.apply($, loader).then(function() {
+  		var faces = arguments;
 
-  		for(var i = 0; i < random(0, 20); i++) {
-  			points.push(new Point(coords[0], coords[1], randomBool() ? "#3d77d1" : "#f83a3a"))
-  		}
-  	}, 20)
+	  	setInterval(function() {
+	  		var coords = randomCoords();
+
+	  		points.push(new Point(coords[0], coords[1], (randomBool() ? "#3d77d1" : "#f83a3a")))
+	  	}, 20)
+
+	  	setInterval(function() {
+	  		var coords = randomCoords();
+	  		var idx = random(0, candidateFaces.length - 1);
+	  		var candidate = candidateFaces[idx];
+
+  			points.push(new Candidate(coords[0], coords[1], (candidate.party == "rep" ? "#f83a3a" : "#3d77d1"), faces[idx]))
+
+	  		// garbage collection
+				for(var i in points) {
+					if(points[i].done) {
+						points.splice(i, 1);
+					}
+	  		}
+	  	}, 300);
+  	})
 	})();
-
-	// var $candidates = $(".js-candidates");
-
-	// function randomPoints(n, real) {
-	// 	return Array.apply(null, Array(n))
-	// 		.map(Number.prototype.valueOf,0)
-	// 		.map(function() {
-	// 			return randomCoords();
-	// 		})
-	// 		.map(function(pos) {
-	// 			var candidate = document.createElement("span")
-
-	// 			if(real) {
-	// 				var info = candidateFaces[random(0, candidateFaces.length - 1)];
-	// 				candidate.className = "candidate candidate_real";
-	// 				candidate.className += info.party === "rep" ? " candidate_rep" : " candidate_dem";
-
-	// 				candidate.innerHTML = '<img src="assets/img/faces/' + info.file + '" />'
-	// 			} else {
-	// 				candidate.className = "candidate candidate_anonymous";
-	// 				candidate.className += randomBool() ? " candidate_rep" : " candidate_dem";
-	// 			}
-
-
-	// 			candidate.style.left = pos[0] + "%"
-	// 			candidate.style.top = pos[1] + "%"
-	// 			return candidate;
-	// 		});
-	// }
-
-	// (function($root) {
-	// 	var $initial = $(document.createDocumentFragment());
-	// 	var $candidate;
-
-	// 	var $points;
-
-	// 	$initial
-	// 		.append($points = randomPoints(250))
-	// 		.append($candidates = randomPoints(50, true))
-	// 		.appendTo($root);
-
-	// 	$points = $points.map($)
-	// 	$candidates = $candidates.map($)
-
-	// 	$points.map(function ($point) {
-	// 		setInterval(function () {
-	// 			$point.toggleClass("candidate_shown", random(0, 20) === 0)
-	// 		}, random(400, 1200))
-	// 	})
-
-	// 	$candidates.map(function ($point) {
-	// 		setInterval(function () {
-	// 			var show = random(0, 15) === 0;
-	// 			$point.toggleClass("candidate_shown", show)
-	// 			$point.toggleClass("candidate_hidden", !show)
-	// 		}, random(600, 1800))
-	// 	})
-	// })($candidates);
-
 })();
