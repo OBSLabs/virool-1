@@ -42,7 +42,7 @@ var originalNumber				=	{};
 var heroText					=	{};
 var controls 					=	{};
 
-var scrolledRestoreTime			=	650;					//restore time for "scrolled"
+var scrolledRestoreTime			=	1050;					//restore time for "scrolled"
 var isScrolled 					=	false;					//indicates if user scrolled in last screen in last scrolledRestoreTime mseconds
 var isScrollEnabled				=	false;
 var isMenuOpened 				=	false;
