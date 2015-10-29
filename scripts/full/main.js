@@ -48,7 +48,7 @@ var isScrollEnabled				=	false;
 var isMenuOpened 				=	false;
 var menuButtonClicked			=	false;
 var scrolledTimeout				=	null;					//just for storing current active timeout
-var keys 						=	{37: 1, 38: 1, 
+var keys 						=	{37: 1, 38: 1,
 									39: 1, 40: 1,
 									32: 1, 34: 1,
 									35: 1, 36: 1};			//disable scrolling events for those buttons
@@ -87,7 +87,7 @@ $(function(){	//same as $(document).ready(...);
 	chartBarsCollection.currentAnimationIndex = 0;
 	chartBarsCollection.transitToNext = .2;
 	chartBarsCollection.isActive = false;
-	
+
 	chartBarsCollection.each(function(){
 		$(this).css({"width" : "6.67%"});
 		this.chartBar = $(this).find('.chart-bar');
@@ -203,7 +203,7 @@ $(function(){	//same as $(document).ready(...);
 			if(Math.random() > 0.8){
 				this.maxWidth = parentSize.width * maxDotSize;
 				this.maxHeight = parentSize.width * maxDotSize;
-			} else {	
+			} else {
 				var size = parentSize.width * minDotSize;
 				this.maxWidth = size;
 				this.maxHeight = size;
@@ -256,14 +256,14 @@ $(function(){	//same as $(document).ready(...);
 		yAxis: { title: '', min: 0, labels: { formatter: function() { return this.value + "%"; } }, gridLineWidth: 0 },
 		xAxis: { type: 'datetime', dateTimeLabelFormats : { minute: '%H:%M' }, showFirstLabel: false, gridLineWidth: .5 },
         plotOptions: {
-        	spline: { lineWidth: 2, states: { hover: { lineWidth: 4 }  }, 
+        	spline: { lineWidth: 2, states: { hover: { lineWidth: 4 }  },
         	marker: { enabled: false }, pointInterval: 14 * 3600, pointStart: Date.UTC(2015, 4, 31, 0, 0, 0) }
         },
 		legend: { enabled: false },
 		series: [{ name: 'Hestavollane',
-            data: [4, 8, 8, 12, 32, 23, 13, 15, 23, 12, 34, 34, 34, 23, 35, 32, 35, 25, 24, 21, 27, 24, 27, 23, 13, 31, 27, 21, 36, 21, 28, 26, 
+            data: [4, 8, 8, 12, 32, 23, 13, 15, 23, 12, 34, 34, 34, 23, 35, 32, 35, 25, 24, 21, 27, 24, 27, 23, 13, 31, 27, 21, 36, 21, 28, 26,
 	        	22, 29, 29, 35, 26] }, { name: 'Vik',
-            data: [10, 20, 26, 29, 28, 12, 30, 20, 30, 21, 26, 27, 38, 26, 22, 20, 21, 13, 23, 30, 21, 20, 30, 10, 22, 21, 20, 13, 20, 31, 22, 
+            data: [10, 20, 26, 29, 28, 12, 30, 20, 30, 21, 26, 27, 38, 26, 22, 20, 21, 13, 23, 30, 21, 20, 30, 10, 22, 21, 20, 13, 20, 31, 22,
             	21, 13, 23, 20, 11, 21]}]});
 
 	chart2 = new Highcharts.Chart({
@@ -274,14 +274,14 @@ $(function(){	//same as $(document).ready(...);
 		yAxis: { title: '', min: 0, labels: { formatter: function() { return this.value + "%"; } }, gridLineWidth: 0 },
 		xAxis: { type: 'datetime', dateTimeLabelFormats : { minute: '%H:%M' }, showFirstLabel: false, gridLineWidth: .5 },
         plotOptions: {
-        	spline: { lineWidth: 2, states: { hover: { lineWidth: 4 }  }, 
+        	spline: { lineWidth: 2, states: { hover: { lineWidth: 4 }  },
         	marker: { enabled: false }, pointInterval: 14 * 3600, pointStart: Date.UTC(2015, 4, 31, 0, 0, 0) }
         },
 		legend: { enabled: false },
 		series: [{ name: 'Hestavollane',
-            data: [4, 8, 8, 12, 32, 23, 13, 15, 23, 12, 34, 34, 34, 23, 35, 32, 35, 25, 24, 21, 27, 24, 27, 23, 13, 31, 27, 21, 36, 21, 28, 26, 
+            data: [4, 8, 8, 12, 32, 23, 13, 15, 23, 12, 34, 34, 34, 23, 35, 32, 35, 25, 24, 21, 27, 24, 27, 23, 13, 31, 27, 21, 36, 21, 28, 26,
 	        	22, 29, 29, 35, 26] }, { name: 'Vik',
-            data: [10, 20, 26, 29, 28, 12, 30, 20, 30, 21, 26, 27, 38, 26, 22, 20, 21, 13, 23, 30, 21, 20, 30, 10, 22, 21, 20, 13, 20, 31, 22, 
+            data: [10, 20, 26, 29, 28, 12, 30, 20, 30, 21, 26, 27, 38, 26, 22, 20, 21, 13, 23, 30, 21, 20, 30, 10, 22, 21, 20, 13, 20, 31, 22,
             	21, 13, 23, 20, 11, 21]}]});
 	/*----------------------------------------*/
 });
@@ -466,7 +466,7 @@ checkScrolled = function(){
 		clearTimeout(scrolledTimeout);
 	}
 
-	scrolledTimeout = setTimeout(function(){ 
+	scrolledTimeout = setTimeout(function(){
 			scrolledTimeout = null;
 			isScrolled = false;
 	}, scrolledRestoreTime);
@@ -483,7 +483,7 @@ smoothScrollTo = function(value, moveTo){
     	duration : 600,
     	progress : function(animation, progressNumber, remainingMs){
     		var topDist = $(document).scrollTop();
-				$('#blank').css('margin-top', (topDist/10)*9);   
+				$('#blank').css('margin-top', (topDist/10)*9);
     	},
     	complete : function(){
     		checkInViewport();
@@ -501,7 +501,7 @@ smoothScrollTo = function(value, moveTo){
 		    	toggleMenu();
 		    }
     	}
-    });	
+    });
 }
 
 scrollToNextSection = function(){
@@ -614,12 +614,12 @@ startChartSlideshow = function(element, data){
 	chartBarsCollection.isActive = true;
 	chartBarsCollection.currentAnimationIndex = 0;
 
-	increaseBar(chartBarsCollection, 
+	increaseBar(chartBarsCollection,
 		chartdata[chartBarsCollection.currentAnimationIndex].height, chartdata);
 }
 
 simpleHandsAnimation = function(){
-	increaseBar(simpleHandsCollection, 
+	increaseBar(simpleHandsCollection,
 		simpleHandsCollection[simpleHandsCollection.currentAnimationIndex].maxHeight, null);
 }
 
@@ -671,12 +671,12 @@ increaseBar = function(array, by, data){
 			$(currentElement[0].chartPercentage)[0].textContent = data[array.currentAnimationIndex].percentage;
 			//chart name
 			$(currentElement[0].chartName)[0].textContent = data[array.currentAnimationIndex].name;
-			//change width 
+			//change width
 			$(currentElement).css({"width" : data[array.currentAnimationIndex].width + "%"});
 			if (data[array.currentAnimationIndex].width == null){
 				$(currentElement).css({"width" : "6.67%"});
 			}
-			
+
 		} else {
 			//change image
 			$(currentElement[0].chartImage).css({'opacity' : '0'});
@@ -684,7 +684,7 @@ increaseBar = function(array, by, data){
 			$(currentElement[0].chartName)[0].textContent = '';
 			$(currentElement).css({"width" : "6.67%"});
 		}
-	} 
+	}
 
 	$(currentElement[0].chartBar).animate({
 		height: by + "%"
@@ -713,7 +713,7 @@ increaseBar = function(array, by, data){
 							increaseBar(array, array[array.currentAnimationIndex].maxHeight, data);
 						}
 					}
-					
+
 				} else {
 					array.isActive = false;
 					if(array.doAtEnd != null){
@@ -790,9 +790,9 @@ initializeDots = function(parentElement){	//specify an jQuery parent element as 
 	for(var o = 0; o < dotsAmount; o++){
 	var dotSize = Math.random() * ((parentSize.width * maxDotSize) + (minDotSize * parentSize.width));
 
-		var element = "<span class='" 
-		+ randomString([redDotClassname, blueDotClassname]) 
-		+ " " + startInViewportClassname 
+		var element = "<span class='"
+		+ randomString([redDotClassname, blueDotClassname])
+		+ " " + startInViewportClassname
 		+ " " + flickClassname + "'"
 		+ "></span>";
 		parentElement.append(element);
@@ -858,7 +858,7 @@ preventDefault = function(e) {
    		}
 		e.preventDefault();
 	}
-	e.returnValue = false;  
+	e.returnValue = false;
 }
 
 preventDefaultForScrollKeys = function(e) {
@@ -883,53 +883,53 @@ enableScroll = function() {
 	isScrollEnabled = true;
     if (window.removeEventListener)
         window.removeEventListener('DOMMouseScroll', preventDefault, false);
-    window.onmousewheel = document.onmousewheel = null; 
-    window.onwheel = null; 
-    window.ontouchmove = null;  
-    document.onkeydown = null;  
+    window.onmousewheel = document.onmousewheel = null;
+    window.onwheel = null;
+    window.ontouchmove = null;
+    document.onkeydown = null;
 }
 
 /*--------------FAKE DATA--------------*/
 //those are fake data, just to check buttons
 var byYearData = 	[{party : "dem", name : "Hillary Clinton", percentage : "$1.67MM", height : 80, imgName : "assets/img/faces/Hillary_Clinton_dem.png"},
 						 {party : "dem", name : "Bernie Sanders", percentage : "$1.26MM", height : 70, imgName : "assets/img/faces/Bernie_Sanders_dem.png"},
-						 {party : "rep", name : "Paul Rand", percentage : "$250K", height : 23, imgName : "assets/img/faces/Paul_Rand_rep.png"}, 
+						 {party : "rep", name : "Paul Rand", percentage : "$250K", height : 23, imgName : "assets/img/faces/Paul_Rand_rep.png"},
 						 {party : "rep", name : "Carly Fiorina", percentage : "$115K", height : 14, imgName : "assets/img/faces/Carly_Fiorina_rep.png"},
 						 {party : "rep", name : "Mike Huckabee", percentage : "$80K", height : 13, imgName : "assets/img/faces/Mike_Huckabee_rep.png"},
-						 {party : "dem", name : "Martin Omalley", percentage : "$65K", height : 12, imgName : "assets/img/faces/Martin_OMalley_dem.png"}, 
-						 {party : "rep", name : "Richard Santorum", percentage : "$8K", height : 10, imgName : "assets/img/faces/Richard_Santorum_rep.png"}, 
+						 {party : "dem", name : "Martin Omalley", percentage : "$65K", height : 12, imgName : "assets/img/faces/Martin_OMalley_dem.png"},
+						 {party : "rep", name : "Richard Santorum", percentage : "$8K", height : 10, imgName : "assets/img/faces/Richard_Santorum_rep.png"},
 						 {party : "rep", name : "Jeb Bush", percentage : "", height : 3, imgName : "assets/img/faces/Jeb_Bush_rep.png"},
 						 {party : "rep", name : "Marco Rubio", percentage : "", height : 3, imgName : "assets/img/faces/Marco_Rubio_rep.png"},
-						 {party : "rep", name : "Donald Trump", percentage : "", height : 3, imgName : "assets/img/faces/Donald_Trump_rep.png"}, 
+						 {party : "rep", name : "Donald Trump", percentage : "", height : 3, imgName : "assets/img/faces/Donald_Trump_rep.png"},
 						 {party : "rep", name : "Ben Carson", percentage : "", height : 3, imgName : "assets/img/faces/Ben_Carson_rep.png"},
 						 {party : "rep", name : "Ted Cruz", percentage : "", height : 3, imgName : "assets/img/faces/Ted_Cruz_rep.png"}];
-						
+
 var byMonthData = 	[{party : "dem", name : "Hillary Clinton", percentage : "$690.4K", height : 80, imgName : "assets/img/faces/Hillary_Clinton_dem.png"},
 						 {party : "dem", name : "Bernie Sanders", percentage : "$515K", height : 69, imgName : "assets/img/faces/Bernie_Sanders_dem.png"},
 						 {party : "rep", name : "Carly Fiorina", percentage : "$95.3K", height : 25, imgName : "assets/img/faces/Carly_Fiorina_rep.png"},
 						 {party : "dem", name : "Martin O`malley", percentage : "$50K", height : 17, imgName : "assets/img/faces/Martin_OMalley_dem.png"},
 						 {party : "rep", name : "Mike Huckabee", percentage : "$48K", height : 16, imgName : "assets/img/faces/Mike_Huckabee_rep.png"},
-						 {party : "rep", name : "Paul Rand", percentage : "$5.6K", height : 10, imgName : "assets/img/faces/Paul_Rand_rep.png"}, 
+						 {party : "rep", name : "Paul Rand", percentage : "$5.6K", height : 10, imgName : "assets/img/faces/Paul_Rand_rep.png"},
 						 {party : "rep", name : "Richard Santorum", percentage : "$4K", height : 9, imgName : "assets/img/faces/Richard_Santorum_rep.png"},
-						 {party : "rep", name : "Donald Trump", percentage : "", height : 3, imgName : "assets/img/faces/Donald_Trump_rep.png"}, 
+						 {party : "rep", name : "Donald Trump", percentage : "", height : 3, imgName : "assets/img/faces/Donald_Trump_rep.png"},
 						 {party : "rep", name : "Jeb Bush", percentage : "", height : 3, imgName : "assets/img/faces/Jeb_Bush_rep.png"},
 						 {party : "rep", name : "Marco Rubio", percentage : "", height : 3, imgName : "assets/img/faces/Marco_Rubio_rep.png"},
 						 {party : "rep", name : "Ben Carson", percentage : "", height : 3, imgName : "assets/img/faces/Ben_Carson_rep.png"},
 						 {party : "rep", name : "Ted Cruz", percentage : "", height : 3, imgName : "assets/img/faces/Ted_Cruz_rep.png"}
 						];
 
-var twentytwelveDAta = 	[{party : "dem", name : "Obama", percentage : "$74.43MM", height : 77, width : 34.5, imgName : "assets/img/faces/Obama_dem.png"}, 
+var twentytwelveDAta = 	[{party : "dem", name : "Obama", percentage : "$74.43MM", height : 77, width : 34.5, imgName : "assets/img/faces/Obama_dem.png"},
 					 {party : "rep", name : "Mitt Romney", percentage : "$16.08MM", height : 23, width : 34.5, imgName : "assets/img/faces/Mitt_Romney_rep.png"}];
 
-var simpleHandsHeights=	[{height : 95}, 
-						 {height : 85}, 
-						 {height : 65}, 
-						 {height : 70}, 
-						 {height : 75}, 
-						 {height : 65}, 
-						 {height : 78}, 
-						 {height : 80}, 
-						 {height : 67.5}, 
+var simpleHandsHeights=	[{height : 95},
+						 {height : 85},
+						 {height : 65},
+						 {height : 70},
+						 {height : 75},
+						 {height : 65},
+						 {height : 78},
+						 {height : 80},
+						 {height : 67.5},
 						 {height : 102.5}];
 /*-------------------------------------*/
 /*-------------------------------------*/
