@@ -1,15 +1,11 @@
 /*
-class 'startInViewport' means that element start animation only when it's appers in viewport
+class 'startInViewport' means that element start's animation only when it's appers in viewport
 copyright ©2015 Roman Antonov
 */
 
 /*--------------SPEC VARIABLES--------------*/
 //class names
-var flickClassname				=	"flick";
 var startInViewportClassname	=	"startInViewport";
-var faceClassname				=	"face-box";
-var redDotClassname				=	"red dot";
-var blueDotClassname			=	"blue dot";
 var demClassname				=	"dem";
 var repClassname				=	"rep";
 var simpleHandsNumbClassname	=	"numb";
@@ -19,18 +15,11 @@ var flagGroupClassname			=	"flag-group";
 
 //elements
 var startInViewport				=	{};
-var bigScrolls 					=	{};
 var chartBarsCollection 		=	{};
 var simpleHandsCollection 		=	{};
 var mobileHandsCollection		=	{};
 var flagHandsCollection			=	{};
 var primaryNavCollection		=	{};
-
-//dots specs
-var dotsAmount					=	100;
-var maxDotSize					=	.08;
-var minDotSize					=	.01;
-var parentSize					=	{};
 
 var chart1 						=	{};
 var chart2 						=	{};
@@ -44,11 +33,11 @@ var controls 					=	{};
 
 var scrolledRestoreTime			=	1050;					//restore time for "scrolled"
 var isScrolled 					=	false;					//indicates if user scrolled in last screen in last scrolledRestoreTime mseconds
-var isScrollEnabled				=	false;
+var isScrollEnabled				=	true;
 var isMenuOpened 				=	false;
 var menuButtonClicked			=	false;
 var scrolledTimeout				=	null;					//just for storing current active timeout
-var keys 						=	{37: 1, 38: 1,
+var keys 						=	{37: 1, 38: 1, 
 									39: 1, 40: 1,
 									32: 1, 34: 1,
 									35: 1, 36: 1};			//disable scrolling events for those buttons
@@ -73,12 +62,36 @@ $(function(){	//same as $(document).ready(...);
 
 		if($(this).find('.table-moving').length){
 			var width = this.charts.find('tfoot').find('td')[0].clientWidth * this.charts.find('tfoot').find('td').length;
-			this.charts.steps = [{ step : 0}, {
-				step : -(width - $(window).width()) / 3}, {
-				step : -(width - $(window).width()) / 3 * 2}, {
-				step : -(width - $(window).width()) * 1.02}];
+			if(isMobile()){
+				this.charts.steps = [
+					{ step : 0}, 
+					{ step : -(width - $(window).width()) / 8}, 
+					{ step : -(width - $(window).width()) / 8 * 2}, 
+					{ step : -(width - $(window).width()) / 8 * 3},
+					{ step : -(width - $(window).width()) / 8 * 4},
+					{ step : -(width - $(window).width()) / 8 * 5},
+					{ step : -(width - $(window).width()) / 8 * 6},
+					{ step : -(width - $(window).width()) / 8 * 7},
+					{ step : -(width - $(window).width()) * 1.02}];
+			} else {
+				this.charts.steps = [
+					{ step : 0}, 
+					{ step : -(width - $(window).width()) / 3}, 
+					{ step : -(width - $(window).width()) / 3 * 2}, 
+					{ step : -(width - $(window).width()) * 0.83}];
+			}
 		} else {
-			this.charts.steps = [{ step : 0}, { step : -(this.charts[0].clientWidth - $(window).width())}];
+			if(isMobile()){
+				this.charts.steps = [
+					{ step : 0}, 
+					{ step : -(this.charts[0].clientWidth - $(window).width()) / 3}, 
+					{ step : -(this.charts[0].clientWidth - $(window).width()) / 3 * 2}, 
+					{ step : -(this.charts[0].clientWidth - $(window).width()) * 1.05}];
+			} else {
+				this.charts.steps = [
+					{ step : 0}, 
+					{ step : -(this.charts[0].clientWidth - $(window).width()) * 1.25}];
+			}
 		}
 	});
 
@@ -87,7 +100,7 @@ $(function(){	//same as $(document).ready(...);
 	chartBarsCollection.currentAnimationIndex = 0;
 	chartBarsCollection.transitToNext = .2;
 	chartBarsCollection.isActive = false;
-
+	
 	chartBarsCollection.each(function(){
 		$(this).css({"width" : "6.67%"});
 		this.chartBar = $(this).find('.chart-bar');
@@ -153,33 +166,38 @@ $(function(){	//same as $(document).ready(...);
 	noStickySections = $('.attr-no-sticky');
 
 	postsNumber = $('.postsNumber');
-	originalNumber = Number(postsNumber[0].textContent);
+	originalNumber = parseInt(postsNumber[0].textContent.replace(',', ''));
 
 	heroText = $('.hero-section').find('h1, h4');
 
-	disableScroll();
-	startScrollEvent();
+	updatePostsNumber();
+
+	//disableScroll();
+	if(!isMobile()){
+		startScrollEvent();
+		disableScroll();
+	} else {
+		$.getScript("https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js", function(data, textStatus, jqxhr){
+			console.log("loaded");
+			$('.chart-hidden-wrap').on('swipeleft', function(){
+				scrollButtons(controls[0].rightScroll);
+			});
+			$('.chart-hidden-wrap').on('swiperight', function(){
+				scrollButtons(controls[0].leftScroll);
+			});
+
+			/*$(document).on("scrollstart",function(){
+				scrollEvent();
+			});*/
+		});
+	}
 	/*----------------------------------------*/
-
-	//set parent size
-	parentSize = elementSize($('.temporary-box').eq(0));
-
-	//populate map with dots
-	initializeDots($('.temporary-box').eq(0));
-
 	//collect all elements that should start "when inside of viewport"
 	startInViewport = $('.' + startInViewportClassname);
-
-	//init scroll boxe's heights
-	onWindowResize();
 
 	//configure animates elements on screen
 	startInViewport.each(function(index){
 		this.isLaunched = false;
-		this.maxWidth = this.clientHeight;
-		this.maxHeight = this.clientWidth;
-		this.maxOpacity = 1;
-		this.randomizePosition = false;
 		if($(this).doAtEnd == null){
 			this.doAtEnd = {
 				animation : function(){},
@@ -187,63 +205,46 @@ $(function(){	//same as $(document).ready(...);
 			};
 		}
 
-		//if class !dot, set fixed sizes
-		if(containClass($(this)[0], faceClassname)){
-			this.maxWidth = parentSize.width * maxDotSize;
-			this.maxHeight = parentSize.width * maxDotSize;
-			this.randomizePosition = true;
-			this.doAtEnd.animation = flickOut;
-			this.doAtEnd.object = $(this);
-		}else if(containClass($(this)[0], redDotClassname) || containClass($(this)[0], blueDotClassname)){
-		//or use random
-			this.randomizePosition = true;
-			this.maxOpacity = .25;
-			this.doAtEnd.animation = flickOut;
-			this.doAtEnd.object = $(this);
-			if(Math.random() > 0.8){
-				this.maxWidth = parentSize.width * maxDotSize;
-				this.maxHeight = parentSize.width * maxDotSize;
-			} else {
-				var size = parentSize.width * minDotSize;
-				this.maxWidth = size;
-				this.maxHeight = size;
-				this.maxOpacity = 1;
-			}
-		}
-
-		//if elements should flick
-		if(containClass($(this)[0], flickClassname)){
-			this.animation = flickIn;
+		//should animation play on mobile
+		if(containClass($(this)[0], 'notForMobile') && isMobile()){
+			this.animation = null;
+			return;
 		}
 
 		//if element is chart box
 		if(containClass($(this)[0], 'chart-bars')){
-			this.animation = startChartSlideshow;
+			if(isMobile()){
+				startChartSlideshow(null, byMonthData);
+			} else {
+				this.animation = startChartSlideshow;
+			}
 		}
 
 		//start hands animation when appears in view
 		if(containClass($(this)[0], 'hand-group')){
-			this.animation = simpleHandsAnimation;
+			if(isMobile()){
+				simpleHandsAnimation();
+			} else {
+				this.animation = simpleHandsAnimation;
+			}
 		}
 
 		//animation for mobile hands
 		if(containClass($(this)[0], mobileGroupClassname)){
-			this.animation = mobileGroupAnimation;
+			if(isMobile()){
+				mobileGroupAnimation();
+			} else {
+				this.animation = mobileGroupAnimation;
+			}
 		}
 
 		//animation form flag hands
 		if(containClass($(this)[0], flagGroupClassname)){
-			this.animation = flagGroupAnimation;
-		}
-
-		if($(this).is('img')){
-			this.doAtEnd = {
-				animation : fadeOutAnimation,
-				object : $(this)
+			if(isMobile()) {
+				flagGroupAnimation();
+			} else {
+				this.animation = flagGroupAnimation;
 			}
-			this.animation = fadeInAnimation;
-			this.fadeInDelay = Math.random() * 2000 + 2000;
-			this.fadeOutDelay = Math.random() * 2000 + 2000;
 		}
 	});
 
@@ -253,36 +254,30 @@ $(function(){	//same as $(document).ready(...);
 		tooltip: { enabled: false },
 		title: { text: '' },
         subtitle: { text: 'Sessions: 186', floating: true, y: 240 },
-		yAxis: { title: '', min: 0, labels: { formatter: function() { return this.value + "%"; } }, gridLineWidth: 0 },
+		yAxis: { title: '', min: 0,max: 40, labels: { formatter: function() { return this.value + "%"; } }, gridLineWidth: 0 },
 		xAxis: { type: 'datetime', dateTimeLabelFormats : { minute: '%H:%M' }, showFirstLabel: false, gridLineWidth: .5 },
         plotOptions: {
-        	spline: { lineWidth: 2, states: { hover: { lineWidth: 4 }  },
+        	spline: { lineWidth: 2, states: { hover: { lineWidth: 4 }  }, 
         	marker: { enabled: false }, pointInterval: 14 * 3600, pointStart: Date.UTC(2015, 4, 31, 0, 0, 0) }
         },
 		legend: { enabled: false },
-		series: [{ name: 'Hestavollane',
-            data: [4, 8, 8, 12, 32, 23, 13, 15, 23, 12, 34, 34, 34, 23, 35, 32, 35, 25, 24, 21, 27, 24, 27, 23, 13, 31, 27, 21, 36, 21, 28, 26,
-	        	22, 29, 29, 35, 26] }, { name: 'Vik',
-            data: [10, 20, 26, 29, 28, 12, 30, 20, 30, 21, 26, 27, 38, 26, 22, 20, 21, 13, 23, 30, 21, 20, 30, 10, 22, 21, 20, 13, 20, 31, 22,
-            	21, 13, 23, 20, 11, 21]}]});
+		series: [{data: [0,8,10,9,10,3,5,2,3,6,4,5,6,6,7,6,6,7,7,7,5,7,8,7,9,8,12,6,9,5,8,0] }, 
+	        	{data: [0,30,25,27,20,22,23,20,24,20,24,17,14,13,20,20,25,18,15,23,19,21,20,21,19,25,29,29,25,26,24]}]});
 
 	chart2 = new Highcharts.Chart({
         chart: { type: 'spline', renderTo: 'chartContainer2' },
 		tooltip: { enabled: false },
 		title: { text: '' },
         subtitle: { text: 'Sessions: 186', floating: true, y: 240 },
-		yAxis: { title: '', min: 0, labels: { formatter: function() { return this.value + "%"; } }, gridLineWidth: 0 },
+		yAxis: { title: '', min: 0,max:40, labels: { formatter: function() { return this.value + "%"; } }, gridLineWidth: 0 },
 		xAxis: { type: 'datetime', dateTimeLabelFormats : { minute: '%H:%M' }, showFirstLabel: false, gridLineWidth: .5 },
         plotOptions: {
-        	spline: { lineWidth: 2, states: { hover: { lineWidth: 4 }  },
+        	spline: { lineWidth: 2, states: { hover: { lineWidth: 4 }  }, 
         	marker: { enabled: false }, pointInterval: 14 * 3600, pointStart: Date.UTC(2015, 4, 31, 0, 0, 0) }
         },
 		legend: { enabled: false },
-		series: [{ name: 'Hestavollane',
-            data: [4, 8, 8, 12, 32, 23, 13, 15, 23, 12, 34, 34, 34, 23, 35, 32, 35, 25, 24, 21, 27, 24, 27, 23, 13, 31, 27, 21, 36, 21, 28, 26,
-	        	22, 29, 29, 35, 26] }, { name: 'Vik',
-            data: [10, 20, 26, 29, 28, 12, 30, 20, 30, 21, 26, 27, 38, 26, 22, 20, 21, 13, 23, 30, 21, 20, 30, 10, 22, 21, 20, 13, 20, 31, 22,
-            	21, 13, 23, 20, 11, 21]}]});
+		series: [{data: [0,4,5,7,4,3,5,6,7,7,8,8,7,8,9,6,7,8,7,8,3,4,3,5,3,6,7,9,6,4,6] }, 
+	        	{data: [5,9,10,12,9,8,10,11,12,12,12,13,12,13,14,11,12,13,12,13,8,9,8,10,8,11,12,14,11,9,11]}]});
 	/*----------------------------------------*/
 });
 /*------------------------------------------*/
@@ -298,7 +293,7 @@ $(function(){
 	NProgress.start();
 });
 
-$(window).on('scroll', function(){
+$(window).scroll(function(){
 	if(isScrollEnabled){
 		scrollEvent();
 	}
@@ -306,13 +301,17 @@ $(window).on('scroll', function(){
 
 // ==> smooth scrolling
 $('.nav-links').click(function(){
-	(isScrollEnabled)?(disableScroll()):{};
+	(isScrollEnabled && !isMobile())?(disableScroll()):{};
 	allSections.currentSection = primaryNavCollection.index($(this));
 	smoothScrollTo($(allSections[allSections.currentSection]), null);
 });
 
 $('.scroll-down-button').click(function(){
-	allSections.currentSection = 1;
+	if(isMobile){
+		allSections.currentSection = $('.scroll-down-button').index($(this)) + 1;
+	} else {
+		allSections.currentSection++;
+	}
 	smoothScrollTo($(allSections[allSections.currentSection]), null);
 });
 
@@ -397,17 +396,19 @@ scrollButtons = function(button){
 
 checkInViewport = function(){
 	//check each element if it is in a viewport
-	startInViewport.each(function(index){
-		if(elementInViewport(this)){
-			if(!this.isLaunched){
-				//animate
-				this.isLaunched = true;
-				if($(this)[0].animation != null){
-					$(this)[0].animation($(this));
+	if(startInViewport.length){	
+		startInViewport.each(function(index){
+			if(elementInViewport(this)){
+				if(!this.isLaunched){
+					//animate
+					this.isLaunched = true;
+					if($(this)[0].animation != null){
+						$(this)[0].animation($(this));
+					}
 				}
 			}
-		}
-	});
+		});
+	}
 }
 
 toggleMenu = function(){
@@ -418,24 +419,25 @@ toggleMenu = function(){
 
 scrolled = function(){
 	checkInViewport();
-
-	noStickySections.each(function(){
-		if(this == allSections[allSections.currentSection]){
-			if($(window).scrollTop() < ($(this)[0].offsetTop - 200)){
-				if(isScrollEnabled){
-					isScrollEnabled = false;
-					disableScroll();
-					scrollToPrevSection();
+	if(!isMobile()){
+		if(noStickySections.length){
+			noStickySections.each(function(){
+				if(this == allSections[allSections.currentSection]){
+					if($(window).scrollTop() < ($(this)[0].offsetTop - 200)){
+						if(isScrollEnabled){
+							disableScroll();
+							scrollToPrevSection();
+						}
+					} else if($(window).scrollTop() > $(this)[0].offsetTop + $(this)[0].clientHeight - $(window).height() + 200){
+						if(isScrollEnabled){
+							disableScroll();
+							scrollToNextSection();
+						}
+					}
 				}
-			} else if($(window).scrollTop() > $(this)[0].offsetTop + $(this)[0].clientHeight - $(window).height() + 200){
-				if(isScrollEnabled){
-					isScrollEnabled = false;
-					disableScroll();
-					scrollToNextSection();
-				}
-			}
+			});
 		}
-	});
+	}
 }
 
 scrollEvent = function(){
@@ -466,7 +468,7 @@ checkScrolled = function(){
 		clearTimeout(scrolledTimeout);
 	}
 
-	scrolledTimeout = setTimeout(function(){
+	scrolledTimeout = setTimeout(function(){ 
 			scrolledTimeout = null;
 			isScrolled = false;
 	}, scrolledRestoreTime);
@@ -482,26 +484,27 @@ smoothScrollTo = function(value, moveTo){
     },{
     	duration : 600,
     	progress : function(animation, progressNumber, remainingMs){
-    		var topDist = $(document).scrollTop();
-				$('#blank').css('margin-top', (topDist/10)*9);
+    		if(!isMobile()){ $('#blank').css('margin-top', ($(document).scrollTop() / 10) * 9); } 
     	},
     	complete : function(){
     		checkInViewport();
-    		if($(allSections[allSections.currentSection]).is('.attr-no-sticky')){
-				enableScroll();
-			} else {
-				disableScroll();
-			}
-			document.location.hash = $(allSections[allSections.currentSection]).attr('id');
+    		if(!isMobile()){
+    			if($(allSections[allSections.currentSection]).is('.attr-no-sticky')){
+					enableScroll();
+				} else {
+					disableScroll();
+				}
+				document.location.hash = $(allSections[allSections.currentSection]).attr('id');
+    		}
 
-			if(allSections.currentSection == 0){
+			if(allSections.currentSection == 0 && !isMobile()){
 				heroText.stop().fadeIn(400);
 			}
 			if(isMenuOpened){
 		    	toggleMenu();
 		    }
     	}
-    });
+    });	
 }
 
 scrollToNextSection = function(){
@@ -509,8 +512,20 @@ scrollToNextSection = function(){
 		allSections.currentSection++;
 		smoothScrollTo($(allSections[allSections.currentSection]), null);
 
-		heroText.stop().fadeOut();
+		if(!isMobile()){
+			heroText.stop().fadeOut();
+		}
 	}
+}
+
+updatePostsNumber = function(){
+	setTimeout(updatePostsNumber, 1000);
+
+	originalNumber += Math.round(Math.random() * 10);
+	if(originalNumber > 15000){
+		originalNumber = 11232;
+	}
+	postsNumber[0].textContent = [originalNumber.toString().slice(0, 2), ',', originalNumber.toString().slice(2, 6)].join('');
 }
 
 scrollToPrevSection = function(){
@@ -531,12 +546,6 @@ scrollToPrevSection = function(){
 		}
 	}
 }
-
-//may be needed for further developement
-onOrientationChange = function(){}
-
-//may be nedded for further developement
-onWindowResize = function(){}
 /*-------------------------------------------*/
 
 /*--------------ANIMATIONS--------------*/
@@ -547,52 +556,10 @@ marginAnimation = function(element){
 	});
 }
 
-flickIn = function(element){
-	if(element[0].randomizePosition){
-		randomPosition(element, parentSize);
-	}
-	element.css({
-		"opacity" : element[0].maxOpacity
-	});
-	element.delay(Math.random() * 4000).animate({
-		height: element[0].maxHeight,
-		width: element[0].maxWidth,
-		top: "-=" + (element[0].maxHeight / 2),
-		left: "-=" + (element[0].maxWidth /2)
-	}, 400, "easeOutBack", function(){
-		if(element[0].doAtEnd != null){
-			element[0].doAtEnd.animation(element[0].doAtEnd.object);
-		}
-	}).delay(Math.random() * 1000 + 300);
-}
-
-flickOut = function(element){
-	element.animate({
-		opacity : 0
-	}, 500, "swing", function(){
-		if(containClass(element[0], faceClassname) && containClass($(allSections[allSections.currentSection])[0], 'us-map-section')){
-			originalNumber += Math.round(Math.random() * 3);
-			if(originalNumber >= 1000){
-				originalNumber = Math.round(Math.random() * 999);
-			}
-			postsNumber[0].textContent = originalNumber;
-		}
-		element.animate({
-			top: "+=" + (element[0].maxHeight / 2),
-			left: "+=" + (element[0].maxWidth /2)
-		}, 100);
-		element.css({
-			"height" : 0,
-			"width" : 0
-		});
-		flickIn(element);
-	});
-}
-
 fadeInAnimation = function(element){
-	element.delay(Math.random() * 2000).animate({
+	element.delay((isMobile())?(100):(Math.random() * 2000)).animate({
 		opacity: "1"
-	}, ((element[0].fadeInDelay) ? (element[0].fadeInDelay) : 400), function(){
+	}, ((element[0].fadeInDelay) ? (element[0].fadeInDelay) : 200), function(){
 		if(element.doAtEnd){
 			element.doAtEnd.animation(element.doAtEnd.object);
 		} else if(element[0].doAtEnd != null){
@@ -601,25 +568,33 @@ fadeInAnimation = function(element){
 	});
 }
 
-fadeOutAnimation = function(element){
-	element.animate({
-		opacity : 0
-	}, ((element[0].fadeOutDelay) ? (element[0].fadeOutDelay) : 400), "swing", function(){
-		fadeInAnimation(element);
-	});
-}
-
 startChartSlideshow = function(element, data){
 	var chartdata = (data != null) ? data : byMonthData;
 	chartBarsCollection.isActive = true;
 	chartBarsCollection.currentAnimationIndex = 0;
 
-	increaseBar(chartBarsCollection,
+	setWidth(chartBarsCollection, chartdata);
+
+	increaseBar(chartBarsCollection, 
 		chartdata[chartBarsCollection.currentAnimationIndex].height, chartdata);
 }
 
+setWidth = function(array, data){
+	array.each(function(index, value){
+		if(data[index] != null){
+			if(data[index].width != null){
+				$(this).css({"width" : data[index].width + "%"});
+			} else {
+				$(this).css({"width" : "8.33%"});
+			}
+		} else {
+			$(this).css({"width" : "8.33%"});
+		}
+	});
+}
+
 simpleHandsAnimation = function(){
-	increaseBar(simpleHandsCollection,
+	increaseBar(simpleHandsCollection, 
 		simpleHandsCollection[simpleHandsCollection.currentAnimationIndex].maxHeight, null);
 }
 
@@ -671,24 +646,18 @@ increaseBar = function(array, by, data){
 			$(currentElement[0].chartPercentage)[0].textContent = data[array.currentAnimationIndex].percentage;
 			//chart name
 			$(currentElement[0].chartName)[0].textContent = data[array.currentAnimationIndex].name;
-			//change width
-			$(currentElement).css({"width" : data[array.currentAnimationIndex].width + "%"});
-			if (data[array.currentAnimationIndex].width == null){
-				$(currentElement).css({"width" : "6.67%"});
-			}
-
 		} else {
 			//change image
 			$(currentElement[0].chartImage).css({'opacity' : '0'});
 			//chart name
 			$(currentElement[0].chartName)[0].textContent = '';
-			$(currentElement).css({"width" : "6.67%"});
 		}
-	}
+	} 
 
 	$(currentElement[0].chartBar).animate({
 		height: by + "%"
 	}, {
+		duration : ((isMobile())?(200):(400)),
 		easing : "easeOutQuint",
 		progress : function(animation, progressNumber, remainingMs){
 			if(progressNumber > array.transitToNext && !isTextStared){
@@ -713,7 +682,7 @@ increaseBar = function(array, by, data){
 							increaseBar(array, array[array.currentAnimationIndex].maxHeight, data);
 						}
 					}
-
+					
 				} else {
 					array.isActive = false;
 					if(array.doAtEnd != null){
@@ -786,27 +755,13 @@ setOpacity = function(element, to){
 /*--------------------------------------*/
 
 /*--------------UTILITIES--------------*/
-initializeDots = function(parentElement){	//specify an jQuery parent element as input
-	for(var o = 0; o < dotsAmount; o++){
-	var dotSize = Math.random() * ((parentSize.width * maxDotSize) + (minDotSize * parentSize.width));
-
-		var element = "<span class='"
-		+ randomString([redDotClassname, blueDotClassname])
-		+ " " + startInViewportClassname
-		+ " " + flickClassname + "'"
-		+ "></span>";
-		parentElement.append(element);
-	}
-}
-
 elementInViewport = function(element){	//check if element is in viewport
     var $element = $(element), $window = $(window);
+     
     return ($element.offset().top + $element.height() <= $window.scrollTop() + $window.height());
 }
 
 containClass = function(element, className){ return element.className.indexOf(className) >= 0; }
-
-randomString = function(params){ return params[Math.floor(Math.random() * params.length)]; }
 
 elementSize = function(element){
 	var size = {};
@@ -815,13 +770,6 @@ elementSize = function(element){
 	else
 		size = {height : 0, width : 0};
 	return size;
-}
-
-randomPosition = function(element, range){
-	element.css({
-		"left" : Math.random() * range.width,
-		"top" : Math.random() * range.height
-	});
 }
 
 shuffle = function(o) {
@@ -858,7 +806,7 @@ preventDefault = function(e) {
    		}
 		e.preventDefault();
 	}
-	e.returnValue = false;
+	e.returnValue = false;  
 }
 
 preventDefaultForScrollKeys = function(e) {
@@ -870,66 +818,108 @@ preventDefaultForScrollKeys = function(e) {
 }
 
 disableScroll = function() {
-	isScrollEnabled = false;
-  	if (window.addEventListener) // older FF
-		window.addEventListener('DOMMouseScroll', preventDefault, false);
-	window.onwheel = preventDefault; // modern standard
-	window.onmousewheel = document.onmousewheel = preventDefault; // older browsers, IE
-	window.ontouchmove  = preventDefault; // mobile
-	document.onkeydown  = preventDefaultForScrollKeys;
+	if(isScrollEnabled){
+		if(isMobile()){
+			/*$("body").touchwipe({
+			     wipeLeft: function() {},
+			     wipeRight: function() {},
+			     wipeUp: function() { 
+			     	scrollToPrevSection();
+			     },
+			     wipeDown: function() { 
+			     	scrollToNextSection();
+			     },
+			     min_move_x: 20,
+			     min_move_y: 20,
+			     preventDefaultEvents: true
+			});*/
+		} else {
+			if (window.addEventListener) // older FF
+				window.addEventListener('DOMMouseScroll', preventDefault, false);
+			window.onwheel = preventDefault; // modern standard
+			window.onmousewheel = document.onmousewheel = preventDefault; // older browsers, IE
+			window.ontouchmove  = preventDefault; // mobile
+			document.onkeydown  = preventDefaultForScrollKeys;
+		}
+		isScrollEnabled = false;
+		console.log("turned off " + isScrollEnabled);
+	}
 }
 
 enableScroll = function() {
-	isScrollEnabled = true;
-    if (window.removeEventListener)
-        window.removeEventListener('DOMMouseScroll', preventDefault, false);
-    window.onmousewheel = document.onmousewheel = null;
-    window.onwheel = null;
-    window.ontouchmove = null;
-    document.onkeydown = null;
+	if(!isScrollEnabled){
+		if(isMobile()){
+		    /*$("body").touchwipe({
+			     wipeLeft: function() {},
+			     wipeRight: function() {},
+			     wipeUp: function() {},
+			     wipeDown: function() {},
+			     min_move_x: 20,
+			     min_move_y: 20,
+			     preventDefaultEvents: false
+			});*/
+		} else {
+		    if (window.removeEventListener)
+	       		window.removeEventListener('DOMMouseScroll', preventDefault, false);
+		    window.onmousewheel = document.onmousewheel = null; 
+		    window.onwheel = null; 
+		    window.ontouchmove = null;  
+		    document.onkeydown = null;
+		}
+		isScrollEnabled = true;
+		console.log("turned on " + isScrollEnabled);
+	}
 }
 
+isMobile = function() {
+	return $(window).width() <= 768;
+}
 /*--------------FAKE DATA--------------*/
 //those are fake data, just to check buttons
-var byYearData = 	[{party : "dem", name : "Hillary Clinton", percentage : "$1.67MM", height : 80, imgName : "assets/img/faces/Hillary_Clinton_dem.png"},
-						 {party : "dem", name : "Bernie Sanders", percentage : "$1.26MM", height : 70, imgName : "assets/img/faces/Bernie_Sanders_dem.png"},
-						 {party : "rep", name : "Paul Rand", percentage : "$250K", height : 23, imgName : "assets/img/faces/Paul_Rand_rep.png"},
-						 {party : "rep", name : "Carly Fiorina", percentage : "$115K", height : 14, imgName : "assets/img/faces/Carly_Fiorina_rep.png"},
-						 {party : "rep", name : "Mike Huckabee", percentage : "$80K", height : 13, imgName : "assets/img/faces/Mike_Huckabee_rep.png"},
-						 {party : "dem", name : "Martin Omalley", percentage : "$65K", height : 12, imgName : "assets/img/faces/Martin_OMalley_dem.png"},
-						 {party : "rep", name : "Richard Santorum", percentage : "$8K", height : 10, imgName : "assets/img/faces/Richard_Santorum_rep.png"},
+var _width = (isMobile())?(15.5) : (34.5);
+var _height = (isMobile()?(.85):(1));
+var byYearData = 	[{party : "dem", name : "Hillary Clinton", percentage : "$1.67MM", height : 80 * _height, imgName : "assets/img/faces/Hillary_Clinton_dem.png"},
+						 {party : "dem", name : "Bernie Sanders", percentage : "$1.26MM", height : 70 * _height, imgName : "assets/img/faces/Bernie_Sanders_dem.png"},
+						 {party : "rep", name : "Paul Rand", percentage : "$250K", height : 23 * _height, imgName : "assets/img/faces/Paul_Rand_rep.png"}, 
+						 {party : "rep", name : "Carly Fiorina", percentage : "$115K", height : 14 * _height, imgName : "assets/img/faces/Carly_Fiorina_rep.png"},
+						 {party : "rep", name : "Mike Huckabee", percentage : "$80K", height : 13 * _height, imgName : "assets/img/faces/Mike_Huckabee_rep.png"},
+						 {party : "dem", name : "Martin Omalley", percentage : "$65K", height : 12, imgName : "assets/img/faces/Martin_OMalley_dem.png"}, 
+						 {party : "rep", name : "Richard Santorum", percentage : "$8K", height : 10, imgName : "assets/img/faces/Richard_Santorum_rep.png"}, 
 						 {party : "rep", name : "Jeb Bush", percentage : "", height : 3, imgName : "assets/img/faces/Jeb_Bush_rep.png"},
 						 {party : "rep", name : "Marco Rubio", percentage : "", height : 3, imgName : "assets/img/faces/Marco_Rubio_rep.png"},
-						 {party : "rep", name : "Donald Trump", percentage : "", height : 3, imgName : "assets/img/faces/Donald_Trump_rep.png"},
+						 {party : "rep", name : "Donald Trump", percentage : "", height : 3, imgName : "assets/img/faces/Donald_Trump_rep.png"}, 
 						 {party : "rep", name : "Ben Carson", percentage : "", height : 3, imgName : "assets/img/faces/Ben_Carson_rep.png"},
 						 {party : "rep", name : "Ted Cruz", percentage : "", height : 3, imgName : "assets/img/faces/Ted_Cruz_rep.png"}];
-
-var byMonthData = 	[{party : "dem", name : "Hillary Clinton", percentage : "$690.4K", height : 80, imgName : "assets/img/faces/Hillary_Clinton_dem.png"},
-						 {party : "dem", name : "Bernie Sanders", percentage : "$515K", height : 69, imgName : "assets/img/faces/Bernie_Sanders_dem.png"},
-						 {party : "rep", name : "Carly Fiorina", percentage : "$95.3K", height : 25, imgName : "assets/img/faces/Carly_Fiorina_rep.png"},
-						 {party : "dem", name : "Martin O`malley", percentage : "$50K", height : 17, imgName : "assets/img/faces/Martin_OMalley_dem.png"},
-						 {party : "rep", name : "Mike Huckabee", percentage : "$48K", height : 16, imgName : "assets/img/faces/Mike_Huckabee_rep.png"},
-						 {party : "rep", name : "Paul Rand", percentage : "$5.6K", height : 10, imgName : "assets/img/faces/Paul_Rand_rep.png"},
+						
+var byMonthData = 	[{party : "dem", name : "Hillary Clinton", percentage : "$690.4K", height : 80 * _height, imgName : "assets/img/faces/Hillary_Clinton_dem.png"},
+						 {party : "dem", name : "Bernie Sanders", percentage : "$515K", height : 69 * _height, imgName : "assets/img/faces/Bernie_Sanders_dem.png"},
+						 {party : "rep", name : "Carly Fiorina", percentage : "$95.3K", height : 25 * _height, imgName : "assets/img/faces/Carly_Fiorina_rep.png"},
+						 {party : "dem", name : "Martin O`malley", percentage : "$50K", height : 17 * _height, imgName : "assets/img/faces/Martin_OMalley_dem.png"},
+						 {party : "rep", name : "Mike Huckabee", percentage : "$48K", height : 16 * _height, imgName : "assets/img/faces/Mike_Huckabee_rep.png"},
+						 {party : "rep", name : "Paul Rand", percentage : "$5.6K", height : 10, imgName : "assets/img/faces/Paul_Rand_rep.png"}, 
 						 {party : "rep", name : "Richard Santorum", percentage : "$4K", height : 9, imgName : "assets/img/faces/Richard_Santorum_rep.png"},
-						 {party : "rep", name : "Donald Trump", percentage : "", height : 3, imgName : "assets/img/faces/Donald_Trump_rep.png"},
+						 {party : "rep", name : "Donald Trump", percentage : "", height : 3, imgName : "assets/img/faces/Donald_Trump_rep.png"}, 
 						 {party : "rep", name : "Jeb Bush", percentage : "", height : 3, imgName : "assets/img/faces/Jeb_Bush_rep.png"},
 						 {party : "rep", name : "Marco Rubio", percentage : "", height : 3, imgName : "assets/img/faces/Marco_Rubio_rep.png"},
 						 {party : "rep", name : "Ben Carson", percentage : "", height : 3, imgName : "assets/img/faces/Ben_Carson_rep.png"},
 						 {party : "rep", name : "Ted Cruz", percentage : "", height : 3, imgName : "assets/img/faces/Ted_Cruz_rep.png"}
 						];
+var twentytwelveDAta = 	[{party : "dem", name : "Obama", percentage : "$74.43MM", height : 77, width : _width, 
+						imgName : "assets/img/faces/Obama_dem.png"}, 
+					 {party : "rep", name : "Mitt Romney", percentage : "$16.08MM", height : 23, width : _width, 
+						imgName : "assets/img/faces/Mitt_Romney_rep.png"}];
 
-var twentytwelveDAta = 	[{party : "dem", name : "Obama", percentage : "$74.43MM", height : 77, width : 34.5, imgName : "assets/img/faces/Obama_dem.png"},
-					 {party : "rep", name : "Mitt Romney", percentage : "$16.08MM", height : 23, width : 34.5, imgName : "assets/img/faces/Mitt_Romney_rep.png"}];
-
-var simpleHandsHeights=	[{height : 95},
-						 {height : 85},
-						 {height : 65},
-						 {height : 70},
-						 {height : 75},
-						 {height : 65},
-						 {height : 78},
-						 {height : 80},
-						 {height : 67.5},
+var simpleHandsHeights=	[{height : 95}, 
+						 {height : 85}, 
+						 {height : 65}, 
+						 {height : 70}, 
+						 {height : 75}, 
+						 {height : 65}, 
+						 {height : 78}, 
+						 {height : 80}, 
+						 {height : 67.5}, 
 						 {height : 102.5}];
+
+
 /*-------------------------------------*/
 /*-------------------------------------*/

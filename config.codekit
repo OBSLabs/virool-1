@@ -35,6 +35,17 @@
 		"outputPathIsSetByUser": 0,
 		"processed": 0
 		},
+	"\/assets\/img\/bg\/us-mab-mob.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 112224,
+		"inputAbbreviatedPath": "\/assets\/img\/bg\/us-mab-mob.png",
+		"outputAbbreviatedPath": "\/assets\/img\/bg\/us-mab-mob.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
 	"\/assets\/img\/bg\/us-map-bg.png": {
 		"fileType": 32768,
 		"ignore": 0,
@@ -42,6 +53,28 @@
 		"initialSize": 0,
 		"inputAbbreviatedPath": "\/assets\/img\/bg\/us-map-bg.png",
 		"outputAbbreviatedPath": "\/assets\/img\/bg\/us-map-bg.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/assets\/img\/dot-bottom.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 1585,
+		"inputAbbreviatedPath": "\/assets\/img\/dot-bottom.png",
+		"outputAbbreviatedPath": "\/assets\/img\/dot-bottom.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/assets\/img\/dot-top.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 1665,
+		"inputAbbreviatedPath": "\/assets\/img\/dot-top.png",
+		"outputAbbreviatedPath": "\/assets\/img\/dot-top.png",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"processed": 0
@@ -431,6 +464,17 @@
 		"outputPathIsSetByUser": 0,
 		"processed": 0
 		},
+	"\/assets\/img\/mobile-img.jpg": {
+		"fileType": 16384,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 98145,
+		"inputAbbreviatedPath": "\/assets\/img\/mobile-img.jpg",
+		"outputAbbreviatedPath": "\/assets\/img\/mobile-img.jpg",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
 	"\/assets\/img\/states\/map.png": {
 		"fileType": 32768,
 		"ignore": 0,
@@ -691,6 +735,17 @@
 		"initialSize": 42341,
 		"inputAbbreviatedPath": "\/assets\/img\/timeline\/timeline-2015.jpg",
 		"outputAbbreviatedPath": "\/assets\/img\/timeline\/timeline-2015.jpg",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/assets\/img\/transparent.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 1670,
+		"inputAbbreviatedPath": "\/assets\/img\/transparent.png",
+		"outputAbbreviatedPath": "\/assets\/img\/transparent.png",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"processed": 0
@@ -1994,6 +2049,17 @@
 		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/scripts\/main.min.js",
 		"outputAbbreviatedPath": "\/scripts\/min\/main.min-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/scripts\/min\/jquery.touchwipe.min.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/scripts\/min\/jquery.touchwipe.min.js",
+		"outputAbbreviatedPath": "\/scripts\/min\/min\/jquery.touchwipe.min-min.js",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 1,

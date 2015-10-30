@@ -74,7 +74,9 @@ body, html {
 	height: 100%;
 	min-height: 100%;
 }
-
+.ui-loader {
+	display: none;
+}
 // a, li, i, button, table  {
 // 	@include transition(all 0.7s);
 // }
@@ -92,9 +94,49 @@ section.full-width {
 .bullet-list {
 	padding-left: 20px;
 	li {
-		list-style: url('../assets/img/icons/bullet.png');
-		background-size: 10px;
-		padding-left: 10px;
+		background: url("../assets/img/icons/bullet.png")no-repeat;
+		padding-left: 30px;
+		list-style: none;
+		background-position: 0 10%;
+		background-size: 20px;
+	}
+}
+.share-items {
+	list-style: outside none none;
+	position: fixed;
+	right: 12px;
+	padding: 0px;
+	z-index: 10;
+	top: 50%;
+	margin-top: -100px;
+	bottom: auto;
+	cursor: pointer;
+	.share-item {
+		margin-bottom: 10px;
+		display: block;
+		transition: all 0.2s linear 0s;
+		.share-link {
+			width: 60px;
+			height: 60px;
+			line-height: 56px;
+			font-size: 30px;
+			text-align: center;
+			color: #FFF;
+			border-radius: 50%;
+			transition: all 0.2s linear 0s;
+			display: table-cell;
+			vertical-align: middle;
+			position: relative;
+		}
+		.share-link-fb {
+		  background-color: #46629E;
+		}
+		.share-link-tw {
+		  background-color: #44B9F0;
+		}
+		.share-link-li {
+		  background-color: #076BB4;
+		}
 	}
 }
 // ==> preloader styles
